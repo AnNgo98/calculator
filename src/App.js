@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import logo from "./logo.svg";
 import "./App.scss";
 import * as calculator from "./helpers/phepcong";
 import { Push_Value, Clear_Value } from "./actions/PhepTinh";
@@ -8,6 +9,7 @@ function App() {
     const dispatch = useDispatch();
     const ketquaTinh = useSelector((state) => state.PhepTinh.ketqua);
     // STATE
+    var mangXuLy = [];
     const [error, setError] = useState(false);
     const [mangChuSo, setMangChuSo] = useState([]);
     const [mangPhepTinh, setMangPhepTinh] = useState([]);
@@ -16,7 +18,7 @@ function App() {
     const [arr, setArr] = useState("");
     // luu phep tinh
     const [pheptinh, setPhepTinh] = useState("");
-    const [setResult] = useState("0");
+    const [result, setResult] = useState("0");
 
     // USEEFFECT
     useEffect(() => {
@@ -28,6 +30,23 @@ function App() {
 
     // FUNC
     const _updateArr = (value) => {
+        var chuyen = "";
+        if (value === "dau") {
+            if (arr === "") {
+                setArr(arr + "-");
+                setScreen(screen + "-");
+            }
+            if (arr !== "") {
+                if (arr.charAt(0) === "-") {
+                    chuyen = arr;
+                    chuyen = chuyen.slice(1, arr.length);
+                    setArr(chuyen);
+                    chuyen = screen;
+                    chuyen = chuyen.slice(0, screen.length - 1);
+                    setScreen(chuyen);
+                }
+            }
+        }
         if (
             value === 0 ||
             value === 1 ||
@@ -52,15 +71,33 @@ function App() {
             setArr(arr + value);
         }
         if (value === "+" || value === "-" || value === "x" || value === "/") {
-            setScreen(screen + value);
             if (arr !== "") {
                 setMangChuSo([...mangChuSo, arr]);
                 setArr("");
             }
-            setPhepTinh(pheptinh + value);
+
+            if (
+                pheptinh !== "" &&
+                screen !== "" &&
+                screen.charAt(screen.length - 1) !== "("
+            ) {
+                chuyen = screen;
+                chuyen = chuyen.slice(0, screen.length - 1);
+                setScreen(chuyen);
+                setScreen(chuyen + value);
+                setPhepTinh(value);
+            }
+            if (
+                pheptinh === "" &&
+                screen !== "" &&
+                screen.charAt(screen.length - 1) !== "("
+            ) {
+                setScreen(screen + value);
+                setPhepTinh(pheptinh + value);
+            }
         }
         if (value === "(" || value === ")") {
-            console.log(arr)
+            console.log(arr);
             setScreen(screen + value);
             if (pheptinh !== "") {
                 console.log(value);
@@ -72,7 +109,7 @@ function App() {
                 setArr("");
             }
             if (pheptinh === "" && arr === "") {
-                console.log("du ma")
+                console.log("du ma");
                 setMangChuSo([...mangChuSo, value]);
             }
         }
@@ -249,7 +286,7 @@ function App() {
                         0
                     </div>
                     <div
-                        onClick={() => _updateArr(true)}
+                        onClick={() => _updateArr("dau")}
                         className="keyboard-container__item-normal"
                     >
                         +/-

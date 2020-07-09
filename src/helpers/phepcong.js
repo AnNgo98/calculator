@@ -51,12 +51,14 @@ export const TachDauRaKhoiSo = (a) => {
 };
 
 export const SoSanh2SL = (a, b) => {
+    var KQSoSanh2SL = 0;
     if (a.length > b.length) {
         return 1;
     } else if (a.length < b.length) {
         return -1;
     } else {
         let len = 0
+        let kq = 0;
         // while (len >= 0) {
         //     if (StringToNumber(a.charAt(len)) > StringToNumber(b.charAt(len))) {
         //         len--;
@@ -90,6 +92,9 @@ export const SoSanh2SL = (a, b) => {
 };
 export const StringToNumber = (s) => {
     return parseInt(s);
+};
+const NumberToString = (num) => {
+    return num.toString();
 };
 export const check = (a, b) => {
     console.log(a," va ", b)
@@ -162,6 +167,9 @@ export const checkNhan = (a, b) => {
 };
 
 export const nhan = (dau, a, b) => {
+    var l1 = a.length;
+    var l2 = b.length;
+    var l;
     var s = "";
     var temp_nhan = 0;
     var Arr = [];
