@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "./logo.svg";
 import "./App.scss";
 import * as calculator from "./helpers/phepcong";
 import { Push_Value, Clear_Value } from "./actions/PhepTinh";
@@ -9,7 +8,6 @@ function App() {
     const dispatch = useDispatch();
     const ketquaTinh = useSelector((state) => state.PhepTinh.ketqua);
     // STATE
-    var mangXuLy = [];
     const [error, setError] = useState(false);
     const [mangChuSo, setMangChuSo] = useState([]);
     const [mangPhepTinh, setMangPhepTinh] = useState([]);
@@ -18,7 +16,7 @@ function App() {
     const [arr, setArr] = useState("");
     // luu phep tinh
     const [pheptinh, setPhepTinh] = useState("");
-    const [result, setResult] = useState("0");
+    const [setResult] = useState("0");
 
     // USEEFFECT
     useEffect(() => {

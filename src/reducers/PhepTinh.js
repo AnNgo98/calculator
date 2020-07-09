@@ -1,5 +1,4 @@
 import * as PhepTinhConstants from "../constants/PhepTinh";
-import findIndex from "lodash/findIndex";
 import * as calculator from "../helpers/phepcong";
 import * as checkUuTien from "../helpers/CheckUuTien";
 const reducer = (
@@ -17,7 +16,6 @@ const reducer = (
             var s = "";
             var mangPhepTinhUuTien = [];
             var result = "";
-            var nho = "";
             var { mangChuSo } = action.data;
             while (
                 mangChuSo.indexOf("(") !== -1 ||
@@ -114,7 +112,7 @@ const reducer = (
                             console.log(mangChuSo);
                         }
                         mangPhepTinhUuTien = [];
-                        const vitri = mangChuSo.indexOf("(");
+                        // const vitri = mangChuSo.indexOf("(");
                         console.log(mangChuSo);
                         mangChuSo.splice(mangChuSo.indexOf("("), 1);
                         mangChuSo.splice(mangChuSo.indexOf(")"), 1);
