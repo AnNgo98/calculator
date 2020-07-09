@@ -1,0 +1,2 @@
+export const PUSHVALUE = "PUSHVALUE"
+export const CLEARVALUE="CLEARVALUE"

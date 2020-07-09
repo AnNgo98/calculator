@@ -1,0 +1,51 @@
+.App {
+    width: 60%;
+    margin: 0 auto;
+}
+.screen-container {
+    font-size: 20px;
+    padding: 10px;
+    height: 300px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.keyboard-container {
+    margin-top: 5px;
+    &__line-container {
+        display: flex;
+        margin-bottom: 5px;
+    }
+    &__item-normal {
+        display: flex;
+        margin-right: 5px;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 50px;
+        background-color: white;
+        &:hover {
+            cursor: pointer;
+        }
+        &:active{
+            background-color: #ffbb00;
+        }
+    }
+    &__item-custom {
+        width: 165px;
+        height: 50px;
+        display: flex;
+        margin-right: 5px;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        &:hover {
+            cursor: pointer;
+        }
+        &:active{
+            background-color: #ffbb00;
+        }
+    }
+}
