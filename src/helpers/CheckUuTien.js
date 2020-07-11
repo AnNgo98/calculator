@@ -35,8 +35,6 @@ export const checkNhanChia = (mangChuSo) => {
 // };
 
 export const NhanChia = (mangPhepTinhUuTien, mangChuSo) => {
-    console.log(mangChuSo);
-    console.log(mangPhepTinhUuTien);
     var result = "";
     for (let i = 0; i < mangPhepTinhUuTien.length; i++) {
         if (mangChuSo[mangPhepTinhUuTien[i]] === "x") {

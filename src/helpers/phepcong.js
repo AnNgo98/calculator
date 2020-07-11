@@ -301,7 +301,6 @@ export const hieu = (dau, a, b) => {
     if (s.length > 1) {
         for (let i = 0; i < s.length; i++) {
             if (s.charAt(i) !== "0") {
-                console.log(i);
                 s = s.slice(i, s.length);
                 break;
             }
@@ -310,7 +309,6 @@ export const hieu = (dau, a, b) => {
     if (dau === 0) {
         s = InsertToResult(s, "-");
     }
-    console.log(s);
     return s;
 };
 

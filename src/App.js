@@ -36,7 +36,6 @@ function App() {
     // FUNC
 
     const _updateArr = (value) => {
-        console.log("hihi");
         var chuyen = "";
 
         if (value === "dau") {
@@ -165,7 +164,6 @@ function App() {
         setResult(0);
     };
     const _tinhKetQua = () => {
-        console.log(arr);
         if (arr !== "") {
             setMangChuSo((preMangChuSo) => [...preMangChuSo, arr, "="]);
         }

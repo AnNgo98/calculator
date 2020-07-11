@@ -35,13 +35,6 @@ const reducer = (
                             mangChuSo.indexOf(")")
                         )
                     );
-                    console.log(mangPhepTinhUuTien);
-                    console.log(
-                        mangChuSo.slice(
-                            mangChuSo.indexOf("(") + 1,
-                            mangChuSo.indexOf(")")
-                        )
-                    );
                     for (let i = 0; i < mangPhepTinhUuTien.length; i++) {
                         if (
                             mangChuSo.slice(
@@ -60,9 +53,24 @@ const reducer = (
                                     mangChuSo.indexOf(")")
                                 )
                             );
-                            console.log(res);
-                            // mangChuSo = res.mangChuSo;
-                            // mangPhepTinhUuTien = res.mangPhepTinhUuTien;
+                        }
+                        if (
+                            mangChuSo.slice(
+                                mangChuSo.indexOf("(") + 1,
+                                mangChuSo.indexOf(")")
+                            )[mangPhepTinhUuTien[i]] === "^" ||
+                            mangChuSo.slice(
+                                mangChuSo.indexOf("(") + 1,
+                                mangChuSo.indexOf(")")
+                            )[mangPhepTinhUuTien[i]] === "!"
+                        ) {
+                            res = checkUuTien.MuGiaiThua(
+                                mangPhepTinhUuTien,
+                                mangChuSo.slice(
+                                    mangChuSo.indexOf("(") + 1,
+                                    mangChuSo.indexOf(")")
+                                )
+                            );
                         }
                     }
                     if (res.mangChuSo) {
@@ -71,21 +79,15 @@ const reducer = (
                                 res.mangChuSo[i] === "+" ||
                                 res.mangChuSo[i] === "-"
                             ) {
-                                console.log(
-                                    res.mangChuSo[i - 1],
-                                    res.mangChuSo[i + 1]
-                                );
                                 result = calculator.checkCongTru(
                                     res.mangChuSo[i - 1],
                                     `${res.mangChuSo[i]}${res.mangChuSo[i + 1]}`
                                 );
-                                console.log(result);
                                 res.mangChuSo.splice(i - 1, 3);
                                 res.mangChuSo.splice(i - 1, 0, result);
                                 result = "";
                                 i = -1;
                             }
-                            console.log(res.mangChuSo);
                         }
                         mangPhepTinhUuTien = [];
                         vitri = mangChuSo.indexOf("(");
@@ -94,32 +96,25 @@ const reducer = (
                             mangChuSo.indexOf(")") + 1 - mangChuSo.indexOf("(")
                         );
                         mangChuSo.splice(vitri, 0, res.mangChuSo[0]);
-                        console.log(mangChuSo);
                     } else {
-                        console.log(mangChuSo);
                         for (
                             let i = mangChuSo.indexOf("(") + 1;
                             i < mangChuSo.indexOf(")");
                             i++
                         ) {
-                            console.log(i);
                             if (mangChuSo[i] === "+" || mangChuSo[i] === "-") {
-                                console.log(mangChuSo[i - 1], mangChuSo[i + 1]);
                                 result = calculator.checkCongTru(
                                     mangChuSo[i - 1],
                                     `${mangChuSo[i]}${mangChuSo[i + 1]}`
                                 );
-                                console.log(result);
                                 mangChuSo.splice(i - 1, 3);
                                 mangChuSo.splice(i - 1, 0, result);
                                 result = "";
                                 i = i - 1;
                             }
-                            console.log(mangChuSo);
                         }
                         mangPhepTinhUuTien = [];
                         const vitri = mangChuSo.indexOf("(");
-                        console.log(mangChuSo);
                         mangChuSo.splice(mangChuSo.indexOf("("), 1);
                         mangChuSo.splice(mangChuSo.indexOf(")"), 1);
                     }
@@ -165,18 +160,15 @@ const reducer = (
             }
             for (let i = 0; i < mangChuSo.length - 1; i++) {
                 if (mangChuSo[i] === "+" || mangChuSo[i] === "-") {
-                    console.log(mangChuSo[i - 1], mangChuSo[i + 1]);
                     result = calculator.checkCongTru(
                         mangChuSo[i - 1],
                         `${mangChuSo[i]}${mangChuSo[i + 1]}`
                     );
-                    console.log(result);
                     mangChuSo.splice(i - 1, 3);
                     mangChuSo.splice(i - 1, 0, result);
                     result = "";
                     i = -1;
                 }
-                console.log(mangChuSo);
             }
 
             if (mangChuSo[0].charAt(0) === "-") {
@@ -185,7 +177,6 @@ const reducer = (
                         s =
                             mangChuSo[0].charAt(0) +
                             mangChuSo[0].slice(i, mangChuSo[0].length);
-                        console.log(s);
                         break;
                     }
                 }
@@ -194,7 +185,6 @@ const reducer = (
                 for (let i = 0; i < mangChuSo[0].length; i++) {
                     if (mangChuSo[0].charAt(i) !== "0") {
                         s = mangChuSo[0].slice(i, mangChuSo[0].length);
-                        console.log(s);
                         break;
                     }
                 }
