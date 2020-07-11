@@ -57,24 +57,8 @@ export const SoSanh2SL = (a, b) => {
     } else if (a.length < b.length) {
         return -1;
     } else {
-        let len = 0
+        let len = 0;
         let kq = 0;
-        // while (len >= 0) {
-        //     if (StringToNumber(a.charAt(len)) > StringToNumber(b.charAt(len))) {
-        //         len--;
-        //         KQSoSanh2SL = 1;
-        //     } else if (
-        //         StringToNumber(a.charAt(len)) < StringToNumber(b.charAt(len))
-        //     ) {
-        //         len--;
-        //         KQSoSanh2SL = -1;
-        //     } else if (
-        //         StringToNumber(a.charAt(len)) === StringToNumber(b.charAt(len))
-        //     ) {
-        //         len--;
-        //         KQSoSanh2SL = 0;
-        //     }
-        // }
 
         while (len <= a.length - 1) {
             if (StringToNumber(a.charAt(len)) > StringToNumber(b.charAt(len))) {
@@ -96,8 +80,7 @@ export const StringToNumber = (s) => {
 const NumberToString = (num) => {
     return num.toString();
 };
-export const check = (a, b) => {
-    console.log(a," va ", b)
+export const checkCongTru = (a, b) => {
     var KetQuaCheck;
     var dauA = 1;
     var dauB = 1;
@@ -105,13 +88,10 @@ export const check = (a, b) => {
     dauB = XetDauCuaSo(b);
     a = TachDauRaKhoiSo(a);
     b = TachDauRaKhoiSo(b);
-    console.log(dauA, dauB)
-    console.log(a, b)
     if (dauA * dauB > 0) {
         KetQuaCheck = tong(dauA, a, b);
     } else {
         const checkSoLon = SoSanh2SL(a, b);
-        console.log(checkSoLon)
         if (checkSoLon === 0) {
             KetQuaCheck = hieu(dauB, b, a);
         }
@@ -127,6 +107,7 @@ export const check = (a, b) => {
     }
     return KetQuaCheck;
 };
+
 export const checkNhan = (a, b) => {
     var kq = "";
     var dauA = 1;
@@ -225,33 +206,50 @@ export const tong = (dau, a, b) => {
     var s = "";
     var temp = 0;
     for (let i = l - 1; i >= 0; i--) {
-        temp = StringToNumber(a.charAt(i)) + StringToNumber(b.charAt(i)) + temp;
+        temp += StringToNumber(a.charAt(i)) + StringToNumber(b.charAt(i));
         s = InsertToResult(s, Math.floor(temp % 10));
         temp = Math.floor(temp / 10);
     }
     if (temp > 0) {
         s = InsertToResult(s, temp);
     }
-    // for (let i = 0; i< s.length;i++){
-    //     if(s.charAt(i)!==0){
-    //         s = s.slice(i, s.length-1);
-    //         break;
-    //     }
-
-    // }
     if (dau === 0) {
         s = InsertToResult(s, "-");
     }
-    // for (let i = 0; i< s.length;i++){
-    //     if(s.charAt(i)!==0){
-    //         s = s.slice(i, s.length-1);
-    //         break;
-    //     }
-
-    // }
-    console.log(s);
     return s;
 };
+
+export const mu = (a, b) => {
+    var dauA = 1;
+    dauA = XetDauCuaSo(a);
+    var s =1;
+    for (let i = 0; i< StringToNumber(b) ; i ++) {
+        s = s * StringToNumber(a);
+    }
+    s = NumberToString(s);
+    return s;
+}
+
+export const giaiThua = (a) => {
+    var dauA = 1;
+    dauA = XetDauCuaSo(a);
+    var s = 1;
+    if (dauA === 1) {
+        for (let i = 1; i<= StringToNumber(a); i++) {
+            s *= i;
+        }
+        s = NumberToString(s);
+    }
+    if (dauA === 0) {
+        const tempa = StringToNumber(a) * -1;
+        for (let i = 1; i<= tempa; i++) {
+            s *= i;
+        }
+        s = NumberToString(s * -1);
+    }
+    
+    return s;
+}
 
 export const hieu = (dau, a, b) => {
     var l1 = a.length;
@@ -300,11 +298,13 @@ export const hieu = (dau, a, b) => {
     //     }
 
     // }
-    for (let i = 0; i < s.length; i++){
-        if(s.charAt(i)!=="0"){
-            console.log(i)
-            s = s.slice(i, s.length)
-            break;
+    if (s.length > 1) {
+        for (let i = 0; i < s.length; i++) {
+            if (s.charAt(i) !== "0") {
+                console.log(i);
+                s = s.slice(i, s.length);
+                break;
+            }
         }
     }
     if (dau === 0) {
@@ -314,6 +314,62 @@ export const hieu = (dau, a, b) => {
     return s;
 };
 
-// check("512", "--+-398");
+export const checkChia = (a, b) => {
+    var kq_chia = "";
+    var dauA = 1;
+    var dauB = 1;
+    dauA = XetDauCuaSo(a);
+    dauB = XetDauCuaSo(b);
+    a = TachDauRaKhoiSo(a);
+    b = TachDauRaKhoiSo(b);
+    if (b === "0") {
+        return null;
+    }
+    const checkSoLon = SoSanh2SL(a, b);
+    if (dauA === 0 && dauB === 0) {
+        kq_chia = chia(1, a, b, checkSoLon);
+    } else {
+        if ((dauA === 1 && dauB === 0) || (dauA === 0 && dauB === 1)) {
+            kq_chia = chia(0, a, b, checkSoLon);
+        } else kq_chia = chia(1, a, b, checkSoLon);
+    }
+    return kq_chia;
+};
 
-// checkNhan("-123456789", "-123456789");
+export const chia = (dau, a, b, checkSoLon) => {
+    var s_chia = "";
+    if (checkSoLon === -1) {
+        return "0";
+    }
+    if (checkSoLon === 0) {
+        return "1";
+    }
+    if (checkSoLon === 1) {
+        var idx_chia = 0;
+        var temp_chia = a[idx_chia];
+        while (StringToNumber(temp_chia) < StringToNumber(b)) {
+            idx_chia += 1;
+            temp_chia =
+                StringToNumber(temp_chia * 10) + StringToNumber(a[idx_chia]);
+        }
+        console.log(temp_chia);
+        while (a.length > idx_chia) {
+            s_chia += NumberToString(
+                Math.floor(StringToNumber(temp_chia) / StringToNumber(b))
+            );
+
+            idx_chia += 1;
+            temp_chia =
+                StringToNumber(StringToNumber(temp_chia) % StringToNumber(b)) *
+                    10 +
+                StringToNumber(a[idx_chia]);
+        }
+        if (s_chia.length === 0) {
+            return "0";
+        }
+    }
+    if (dau === 0) {
+        return InsertToResult(s_chia, "-");
+    }
+    return s_chia;
+};

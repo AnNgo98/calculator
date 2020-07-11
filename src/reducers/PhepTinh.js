@@ -5,8 +5,9 @@ import * as checkUuTien from "../helpers/CheckUuTien";
 const reducer = (
     state = {
         mangChuSo: [],
-        mangPhepTinh: [],
+        // mangPhepTinh: [],
         ketqua: "",
+        history: [],
     },
     action
 ) => {
@@ -17,8 +18,7 @@ const reducer = (
             var s = "";
             var mangPhepTinhUuTien = [];
             var result = "";
-            var nho = "";
-            var { mangChuSo } = action.data;
+            var { mangChuSo, screen } = action.data;
             while (
                 mangChuSo.indexOf("(") !== -1 ||
                 mangChuSo.indexOf(")") !== -1
@@ -47,7 +47,11 @@ const reducer = (
                             mangChuSo.slice(
                                 mangChuSo.indexOf("(") + 1,
                                 mangChuSo.indexOf(")")
-                            )[mangPhepTinhUuTien[i]] === "x"
+                            )[mangPhepTinhUuTien[i]] === "x" ||
+                            mangChuSo.slice(
+                                mangChuSo.indexOf("(") + 1,
+                                mangChuSo.indexOf(")")
+                            )[mangPhepTinhUuTien[i]] === "/"
                         ) {
                             res = checkUuTien.NhanChia(
                                 mangPhepTinhUuTien,
@@ -71,7 +75,7 @@ const reducer = (
                                     res.mangChuSo[i - 1],
                                     res.mangChuSo[i + 1]
                                 );
-                                result = calculator.check(
+                                result = calculator.checkCongTru(
                                     res.mangChuSo[i - 1],
                                     `${res.mangChuSo[i]}${res.mangChuSo[i + 1]}`
                                 );
@@ -101,7 +105,7 @@ const reducer = (
                             console.log(i);
                             if (mangChuSo[i] === "+" || mangChuSo[i] === "-") {
                                 console.log(mangChuSo[i - 1], mangChuSo[i + 1]);
-                                result = calculator.check(
+                                result = calculator.checkCongTru(
                                     mangChuSo[i - 1],
                                     `${mangChuSo[i]}${mangChuSo[i + 1]}`
                                 );
@@ -125,7 +129,9 @@ const reducer = (
             // buoc tinh khong con dau ngoac
             if (
                 mangChuSo.indexOf("x") !== -1 ||
-                mangChuSo.indexOf("/") !== -1
+                mangChuSo.indexOf("/") !== -1 ||
+                mangChuSo.indexOf("^") !== -1 ||
+                mangChuSo.indexOf("!")
             ) {
                 mangPhepTinhUuTien = checkUuTien.checkNhanChia(mangChuSo);
             }
@@ -135,29 +141,32 @@ const reducer = (
                         mangPhepTinhUuTien,
                         mangChuSo
                     );
-                    console.log(res);
                     mangChuSo = res.mangChuSo;
                     mangPhepTinhUuTien = res.mangPhepTinhUuTien;
-                    // result = calculator.checkNhan(
-                    //     mangChuSo[mangPhepTinhUuTien[i] - 1],
-                    //     mangChuSo[mangPhepTinhUuTien[i] + 1]
-                    // );
-                    // mangChuSo.splice(mangPhepTinhUuTien[i] - 1, 3);
-                    // mangChuSo.splice(mangPhepTinhUuTien[i] - 1, 0, result);
-                    // for (let j = i + 1; j < mangPhepTinhUuTien.length; j++) {
-                    //     if (mangPhepTinhUuTien[j]) {
-                    //         mangPhepTinhUuTien[j] = mangPhepTinhUuTien[j] - 2;
-                    //         // mangPhepTinhUuTien[i + 1] =
-                    //         //     mangPhepTinhUuTien[i + 1] - 2;
-                    //     }
-                    // }
-                    // result = "";
+                }
+                if (mangChuSo[mangPhepTinhUuTien[i]] === "/") {
+                    const res = checkUuTien.NhanChia(
+                        mangPhepTinhUuTien,
+                        mangChuSo
+                    );
+                    mangChuSo = res.mangChuSo;
+                    mangPhepTinhUuTien = res.mangPhepTinhUuTien;
+                }
+                if (mangChuSo[mangPhepTinhUuTien[i]] === "^") {
+                    const res = checkUuTien.MuGiaiThua(mangPhepTinhUuTien, mangChuSo);
+                    mangChuSo = res.mangChuSo;
+                    mangPhepTinhUuTien = res.mangPhepTinhUuTien;
+                }
+                if (mangChuSo[mangPhepTinhUuTien[i]] === "!") {
+                    const res = checkUuTien.MuGiaiThua(mangPhepTinhUuTien, mangChuSo);
+                    mangChuSo = res.mangChuSo;
+                    mangPhepTinhUuTien = res.mangPhepTinhUuTien;
                 }
             }
             for (let i = 0; i < mangChuSo.length - 1; i++) {
                 if (mangChuSo[i] === "+" || mangChuSo[i] === "-") {
                     console.log(mangChuSo[i - 1], mangChuSo[i + 1]);
-                    result = calculator.check(
+                    result = calculator.checkCongTru(
                         mangChuSo[i - 1],
                         `${mangChuSo[i]}${mangChuSo[i + 1]}`
                     );
@@ -169,6 +178,7 @@ const reducer = (
                 }
                 console.log(mangChuSo);
             }
+
             if (mangChuSo[0].charAt(0) === "-") {
                 for (let i = 1; i < mangChuSo[0].length; i++) {
                     if (mangChuSo[0].charAt(i) !== "0") {
@@ -189,8 +199,15 @@ const reducer = (
                     }
                 }
             }
+            if (s === "") {
+                s = "0";
+            }
 
-            return { ...state, ketqua: s };
+            return {
+                ...state,
+                ketqua: s,
+                history: [...state.history, screen + "=" + s],
+            };
         case PhepTinhConstants.CLEARVALUE:
             return {
                 ...state,

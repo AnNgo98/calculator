@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import App from "./App";
 import ConfigStore from "./helpers/ReduxConfig";
 import * as serviceWorker from "./serviceWorker";
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 const store = ConfigStore();
 

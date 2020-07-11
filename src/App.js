@@ -1,36 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "./logo.svg";
+import { Modal, Button } from "antd";
+import { HistoryOutlined } from "@ant-design/icons";
 import "./App.scss";
-import * as calculator from "./helpers/phepcong";
 import { Push_Value, Clear_Value } from "./actions/PhepTinh";
 
 function App() {
     const dispatch = useDispatch();
     const ketquaTinh = useSelector((state) => state.PhepTinh.ketqua);
+    const history = useSelector((state) => state.PhepTinh.history);
     // STATE
     var mangXuLy = [];
     const [error, setError] = useState(false);
     const [mangChuSo, setMangChuSo] = useState([]);
-    const [mangPhepTinh, setMangPhepTinh] = useState([]);
+    // const [mangPhepTinh, setMangPhepTinh] = useState([]);
     const [screen, setScreen] = useState("");
     // luu so
     const [arr, setArr] = useState("");
     // luu phep tinh
     const [pheptinh, setPhepTinh] = useState("");
     const [result, setResult] = useState("0");
-
+    const [showModal, setShowModal] = useState(false);
     // USEEFFECT
     useEffect(() => {
         if (mangChuSo[mangChuSo.length - 1] === "=") {
-            dispatch(Push_Value({ mangChuSo }));
-            _inKetQua();
+            dispatch(Push_Value({ mangChuSo, screen }));
+            // _inKetQua();
         }
     }, [mangChuSo]);
 
+    // arr: là số được lưu tạm thời cho tới khi gặp + - * / lưu vào setMangChuSo
+    // pheptinh: là mảng các dấu tạm thời
+    // setPhepTinh : là action để thêm dấu vào mảng pheptinh
+    // cái mangChuSo là cái mảng tách ra được các số, các dấu
     // FUNC
+
     const _updateArr = (value) => {
+        console.log("hihi");
         var chuyen = "";
+
         if (value === "dau") {
             if (arr === "") {
                 setArr(arr + "-");
@@ -60,22 +68,24 @@ function App() {
             value === 9
         ) {
             setScreen(screen + value);
-            if (pheptinh.length > 2) {
-                setError(true);
-            }
             if (pheptinh !== "") {
-                setMangPhepTinh([...mangPhepTinh, pheptinh]);
+                // setMangPhepTinh([...mangPhepTinh, pheptinh]);
                 setMangChuSo([...mangChuSo, pheptinh]);
                 setPhepTinh("");
             }
             setArr(arr + value);
         }
-        if (value === "+" || value === "-" || value === "x" || value === "/") {
+        if (
+            value === "+" ||
+            value === "-" ||
+            value === "x" ||
+            value === "/" ||
+            value === "^"
+        ) {
             if (arr !== "") {
                 setMangChuSo([...mangChuSo, arr]);
                 setArr("");
             }
-
             if (
                 pheptinh !== "" &&
                 screen !== "" &&
@@ -96,11 +106,34 @@ function App() {
                 setPhepTinh(pheptinh + value);
             }
         }
+        if (value === "!") {
+            if (arr !== "") {
+                setMangChuSo([...mangChuSo, arr]);
+                setArr("");
+            }
+            if (
+                pheptinh !== "" &&
+                screen !== "" &&
+                screen.charAt(screen.length - 1) !== "("
+            ) {
+                chuyen = screen;
+                chuyen = chuyen.slice(0, screen.length - 1);
+                setScreen(chuyen);
+                setScreen(chuyen + value);
+                setPhepTinh(value);
+            }
+            if (
+                pheptinh === "" &&
+                screen !== "" &&
+                screen.charAt(screen.length - 1) !== "("
+            ) {
+                setScreen(screen + value);
+                setArr(value);
+            }
+        }
         if (value === "(" || value === ")") {
-            console.log(arr);
             setScreen(screen + value);
             if (pheptinh !== "") {
-                console.log(value);
                 setMangChuSo([...mangChuSo, pheptinh, value]);
                 setPhepTinh("");
             }
@@ -109,14 +142,17 @@ function App() {
                 setArr("");
             }
             if (pheptinh === "" && arr === "") {
-                console.log("du ma");
                 setMangChuSo([...mangChuSo, value]);
             }
         }
     };
-    const _showKetQua = () => {
-        console.log(mangPhepTinh);
-        console.log(mangChuSo);
+    const _renderHistory = (data) => {
+        if (data) {
+            return data.map((item, index) => {
+                return <div>{index+1}. {item}</div>;
+            });
+        }
+
     };
     const _clear = () => {
         dispatch(Clear_Value());
@@ -125,43 +161,16 @@ function App() {
         setMangChuSo([]);
         setArr("");
         setPhepTinh("");
-        setMangPhepTinh([]);
+        // setMangPhepTinh([]);
         setResult(0);
     };
     const _tinhKetQua = () => {
+        console.log(arr);
         if (arr !== "") {
             setMangChuSo((preMangChuSo) => [...preMangChuSo, arr, "="]);
         }
         if (arr === "") {
             setMangChuSo((preMangChuSo) => [...preMangChuSo, "="]);
-        }
-    };
-    const _inKetQua = () => {
-        if (mangChuSo.length - mangPhepTinh.length === 2) {
-            let demPhepTinh = 0;
-            while (demPhepTinh < mangPhepTinh.length) {
-                if (
-                    mangPhepTinh[demPhepTinh] === "-" ||
-                    mangPhepTinh[demPhepTinh] === "+" ||
-                    mangPhepTinh[demPhepTinh] === "--" ||
-                    mangPhepTinh[demPhepTinh] === "+-" ||
-                    mangPhepTinh[demPhepTinh] === "++"
-                ) {
-                    var kq = calculator.check(
-                        mangChuSo[demPhepTinh],
-                        `${mangPhepTinh[demPhepTinh]}${
-                            mangChuSo[demPhepTinh + 1]
-                        }`
-                    );
-                    setResult(kq);
-                }
-                if (
-                    mangPhepTinh[demPhepTinh] === "x" ||
-                    mangPhepTinh[demPhepTinh] === "/"
-                ) {
-                }
-                demPhepTinh++;
-            }
         }
     };
 
@@ -199,6 +208,12 @@ function App() {
                     >
                         /
                     </div>
+                    <div
+                        onClick={() => _updateArr("^")}
+                        className="keyboard-container__item-normal"
+                    >
+                        <p>^</p>
+                    </div>
                 </div>
                 <div className="keyboard-container__line-container">
                     <div
@@ -224,6 +239,12 @@ function App() {
                         className="keyboard-container__item-normal"
                     >
                         x
+                    </div>
+                    <div
+                        onClick={() => _updateArr("!")}
+                        className="keyboard-container__item-normal"
+                    >
+                        !
                     </div>
                 </div>
                 <div className="keyboard-container__line-container">
@@ -298,8 +319,23 @@ function App() {
                     >
                         =
                     </div>
+                    <div
+                        onClick={() => setShowModal(!showModal)}
+                        className="keyboard-container__item-normal"
+                    >
+                        <HistoryOutlined />
+                    </div>
                 </div>
             </div>
+            <Modal
+                title="Lịch sử các phép tính bạn thực hiện"
+                visible={showModal}
+                // onOk={() => setShowModal(!showModal)}
+                onCancel={() => setShowModal(!showModal)}
+                footer={null}
+            >
+                {_renderHistory(history)}
+            </Modal>
         </div>
     );
 }
