@@ -310,10 +310,10 @@ export const tongSoThuc = (dau, a, b) => {
     var lb1 = tempb1.length;
     var l1;
     if (la1 > lb1) {
-        tempb1 = ChuanHoa(tempa1, tempb1, la1, lb1);
+        tempb1 = ChuanHoaAfter(tempa1, tempb1, la1, lb1);
         l1 = la1;
     } else {
-        tempa1 = ChuanHoa(tempa1, tempb1, la1, lb1);
+        tempa1 = ChuanHoaAfter(tempa1, tempb1, la1, lb1);
         l1 = lb1;
     }
     var temp1 = 0;
