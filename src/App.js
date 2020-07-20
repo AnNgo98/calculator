@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Modal, Button } from "antd";
+import { Modal, Button, Input } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
 import "./App.scss";
 import { Push_Value, Clear_Value } from "./actions/PhepTinh";
@@ -64,7 +64,8 @@ function App() {
             value === 6 ||
             value === 7 ||
             value === 8 ||
-            value === 9
+            value === 9 ||
+            value === '.'
         ) {
             setScreen(screen + value);
             if (pheptinh !== "") {
@@ -106,6 +107,8 @@ function App() {
             }
         }
         if (value === "!") {
+            // const a = mangChuSo.slice(0, mangChuSo.length-1);
+            // console.log(a);
             if (arr !== "") {
                 setMangChuSo([...mangChuSo, arr]);
                 setArr("");
@@ -144,14 +147,37 @@ function App() {
                 setMangChuSo([...mangChuSo, value]);
             }
         }
+        if (value === "CE") {
+            dispatch(Clear_Value());
+            let mangNew = [...mangChuSo]
+            if (arr.length < 2) {
+                if (arr !== "") {
+                    mangNew = [...mangNew, arr];
+                }
+                setScreen(screen.slice(0, -1));
+                setMangChuSo(mangNew.slice(0, mangNew.length-1));
+                setPhepTinh("");
+                setArr("");
+            } else {
+                const arrTemp = arr.slice(0,-1);
+                mangNew = [...mangNew, arrTemp];
+                setScreen(screen.slice(0, -1));
+                setMangChuSo(mangNew);
+                setPhepTinh("");
+                setArr("");
+            }
+        }
     };
     const _renderHistory = (data) => {
         if (data) {
             return data.map((item, index) => {
-                return <div>{index+1}. {item}</div>;
+                return (
+                    <div>
+                        {index + 1}. {item}
+                    </div>
+                );
             });
         }
-
     };
     const _clear = () => {
         dispatch(Clear_Value());
@@ -171,23 +197,49 @@ function App() {
             setMangChuSo((preMangChuSo) => [...preMangChuSo, "="]);
         }
     };
+    const _renderCE = () => {
+        if (screen.length !== 0 && mangChuSo.indexOf("=")===-1) {
+            return (
+                <div
+                    onClick={() => _updateArr("CE")}
+                    className="keyboard-container__item-normal"
+                >
+                    CE
+                </div>
+            );
+        }
+        return (
+            <div
+                onClick={() => _clear()}
+                className="keyboard-container__item-normal"
+            >
+                C
+            </div>
+        );
+    };
 
     // RENDER
     return (
         <div className="App">
             <div className="screen-container">
+                {/* <Input
+                    value={screen}
+                    autoFocus
+                    onChange={(e) => setScreen(e.target.value)}
+                /> */}
                 <div>{screen}</div>
                 <div>{ketquaTinh}</div>
                 <div>{error ? "Phep toan khong hop le" : ""}</div>
             </div>
             <div className="keyboard-container">
                 <div className="keyboard-container__line-container">
-                    <div
+                    {/* <div
                         onClick={() => _clear()}
                         className="keyboard-container__item-normal"
                     >
                         C
-                    </div>
+                    </div> */}
+                    {_renderCE()}
                     <div
                         onClick={() => _updateArr("(")}
                         className="keyboard-container__item-normal"
@@ -207,10 +259,10 @@ function App() {
                         /
                     </div>
                     <div
-                        onClick={() => _updateArr("^")}
+                        onClick={() => _updateArr("√")}
                         className="keyboard-container__item-normal"
                     >
-                        <p>^</p>
+                        √
                     </div>
                 </div>
                 <div className="keyboard-container__line-container">
@@ -270,6 +322,12 @@ function App() {
                     >
                         -
                     </div>
+                    <div
+                        onClick={() => _updateArr("^")}
+                        className="keyboard-container__item-normal"
+                    >
+                        ^
+                    </div>
                 </div>
                 <div className="keyboard-container__line-container">
                     <div
@@ -310,7 +368,12 @@ function App() {
                     >
                         +/-
                     </div>
-                    <div className="keyboard-container__item-normal">.</div>
+                    <div 
+                        onClick={() => _updateArr(".")}
+                        className="keyboard-container__item-normal"
+                    >
+                        .
+                    </div>
                     <div
                         onClick={() => _tinhKetQua()}
                         className="keyboard-container__item-normal"

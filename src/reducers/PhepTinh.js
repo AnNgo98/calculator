@@ -19,6 +19,9 @@ const reducer = (
             var mangPhepTinhUuTien = [];
             var result = "";
             var { mangChuSo, screen } = action.data;
+            console.log(mangChuSo);
+            console.log(mangChuSo.indexOf('.')); 
+            // tính có dấu ngoặc
             while (
                 mangChuSo.indexOf("(") !== -1 ||
                 mangChuSo.indexOf(")") !== -1
@@ -170,7 +173,6 @@ const reducer = (
                     i = -1;
                 }
             }
-
             if (mangChuSo[0].charAt(0) === "-") {
                 for (let i = 1; i < mangChuSo[0].length; i++) {
                     if (mangChuSo[0].charAt(i) !== "0") {
@@ -181,7 +183,8 @@ const reducer = (
                     }
                 }
             }
-            if (mangChuSo[0].charAt(0) !== "-") {
+            // kiểm tra số 0 trước dấu . của kết quả số nguyên
+            if (mangChuSo[0].charAt(0) !== "-" && mangChuSo[0].indexOf('.') === -1) {
                 for (let i = 0; i < mangChuSo[0].length; i++) {
                     if (mangChuSo[0].charAt(i) !== "0") {
                         s = mangChuSo[0].slice(i, mangChuSo[0].length);
@@ -189,10 +192,26 @@ const reducer = (
                     }
                 }
             }
+            // kiểm tra số 0 trước dấu . của kết quả số thực
+            if (mangChuSo[0].indexOf('.') !== -1) {
+                const indexDauCham = mangChuSo[0].indexOf('.');
+                const stringBeforeDauCham = mangChuSo[0].slice(0, indexDauCham);
+                if (stringBeforeDauCham.length >= 2) {
+                    for (let i = 0; i < indexDauCham - 1; i++) {
+                        if (calculator.StringToNumber(mangChuSo[0].charAt(i)) !== 0) {
+                            s = mangChuSo[0];
+                            break;
+                        } else {
+                            s = mangChuSo[0].slice(i+1, mangChuSo[0].length + 1);
+                        }
+                    }
+                } else {
+                    s = mangChuSo[0];
+                }
+            }
             if (s === "") {
                 s = "0";
             }
-
             return {
                 ...state,
                 ketqua: s,
